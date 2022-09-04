@@ -30,6 +30,7 @@ AND
 .primary-button {
   background-color: #554994;
   padding: 0.6em 0.9em;
+  min-width: 12rem;
   color: #fff;
   border-radius: 5px;
 }
@@ -37,6 +38,7 @@ AND
 .secondary-button {
   background-color: #f675a8;
   padding: 0.6em 0.9em;
+  min-width: 12rem;
   color: #fff;
   border-radius: 5px;
 }
