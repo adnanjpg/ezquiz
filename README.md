@@ -9,7 +9,7 @@ This project will definetely __suck__ as it is my first next.js project and one 
 
 1. This project uses [PlanetScale](https://planetscale.com/) for the db
     
-    1. So you first need to create a db in [PlanetScale](https://planetscale.com/)
+    1. So you first need to create a db in [PlanetScale](https://planetscale.com/), by following the [official documentation](https://planetscale.com/docs/tutorials/planetscale-quick-start-guide#create-a-database)
 
     2. Then you need to create an `.env` file in the root of the project, and then paste your db connection string. it will provided as a single line copy-paste from PlanetScale directly. The line will be something like this:
     `DATABASE_URL='mysql://{username}:{passowrd}@{region}.connect.psdb.cloud/{projectname}?ssl={"rejectUnauthorized":true}'`
