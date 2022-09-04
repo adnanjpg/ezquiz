@@ -6,16 +6,16 @@ interface CreateQuizState {
   title?: string
   questions?: Array<Question>
   answers?: Array<QuestionAnswer>
-  currentStep: CreateQuizSteps
+  currentStep: CreateQuizStep
 }
 
-export enum CreateQuizSteps {
+export enum CreateQuizStep {
   writingTitle,
   creatingQuestions,
 }
 
 const initialState: CreateQuizState = {
-  currentStep: CreateQuizSteps.writingTitle,
+  currentStep: CreateQuizStep.writingTitle,
 }
 
 export const selectCurrentStep = (state: RootState) =>
@@ -25,10 +25,15 @@ export const createQuizSlice = createSlice({
   name: "create-quiz",
   initialState,
   reducers: {
-    blabla: (state, action: PayloadAction) => {},
+    setStep: (state, action: PayloadAction<CreateQuizStep>) => {
+      state.currentStep = action.payload
+    },
+    setTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload
+    },
   },
 })
 
-export const { blabla } = createQuizSlice.actions
+export const { setTitle, setStep } = createQuizSlice.actions
 
 export default createQuizSlice.reducer

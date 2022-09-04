@@ -60,7 +60,10 @@ AND
 
 input {
   border: solid 1px #ddd;
+  margin: 0.25rem;
+  padding: 0.75rem;
 }
+
 input:focus {
   outline: none !important;
   border: 1px solid #ffccb3;
