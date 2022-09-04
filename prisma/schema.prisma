@@ -1,0 +1,49 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+}
+
+model Quiz {
+  id        Int @id @default(autoincrement())
+  creatorId Int
+}
+
+model Question {
+  id     Int    @id @default(autoincrement())
+  text   String
+  quizId String
+}
+
+model QuestionAnswer {
+  id         Int     @id @default(autoincrement())
+  text       String
+  iscorrect  Boolean
+  questionId Int
+}
+
+model QuizSubmission {
+  id          Int @id @default(autoincrement())
+  quizId      Int
+  submitterId Int
+}
+
+model QuizSubmissionAnswer {
+  id        Int @id @default(autoincrement())
+  quizSubId Int
+}
+
+model QuizSubmissionAnsSelection {
+  id           Int @id @default(autoincrement())
+  ansId        Int
+  quizSubAnsId Int
+}
