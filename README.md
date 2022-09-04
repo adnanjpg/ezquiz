@@ -4,7 +4,8 @@ This project is a webapp that enables you to create quizzes, share them with oth
 
 This project will definetely __suck__ as it is my first next.js project and one of the first react projects I've ever done.
 
-## SETUP
+<details>
+<summary> SETUP </summary>
 
 1. This project uses [PlanetScale](https://planetscale.com/) for the db
     
@@ -24,3 +25,14 @@ This project will definetely __suck__ as it is my first next.js project and one 
       3. finally you need to update your `DATABASE_URL` in `.env` file and replace your `url` with your localhost url
          - before:`DATABASE_URL='mysql://{username}:{passowrd}@`<font style="color:red">{region}.connect.psdb.cloud</font>`/{projectname}?ssl={"rejectUnauthorized":true}'`   
          - after: `DATABASE_URL='mysql://{username}:{passowrd}@`<font style="color:red">127.0.0.1:{port (default: 3309)}</font>`/{projectname}?ssl={"rejectUnauthorized":true}'`
+
+</details>
+
+
+<details>
+<summary> RUN </summary>
+
+1. in a terminal windows run `bash scripts/connect_to_db_local.sh` 
+2. in another window run `npm run dev`
+
+</details>
