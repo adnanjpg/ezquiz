@@ -1,0 +1,153 @@
+[
+    {
+        "id": "1",
+        "text": "Which Stephen King book did Joey hide in his freezer?",
+        "answers": [
+            {
+                "id": "1",
+                "text": "Pet Sematary"
+            },
+            {
+                "id": "2",
+                "text": "The Shining"
+            },
+            {
+                "id": "3",
+                "text": "Carrie"
+            },
+            {
+                "id": "4",
+                "text": "It"
+            }
+        ],
+        "correctAnswersIds": [
+            "2"
+        ]
+    },
+    {
+        "id": "2",
+        "text": "How many sisters does Joey have?",
+        "answers": [
+            {
+                "id": "1",
+                "text": "7"
+            },
+            {
+                "id": "2",
+                "text": "5"
+            },
+            {
+                "id": "3",
+                "text": "2"
+            },
+            {
+                "id": "4",
+                "text": "None"
+            }
+        ],
+        "correctAnswersIds": [
+            "1"
+        ]
+    },
+    {
+        "id": "3",
+        "text": "What is the name of Joey’s Cabbage-Patch kid?",
+        "answers": [
+            {
+                "id": "1",
+                "text": "Ken Adams"
+            },
+            {
+                "id": "2",
+                "text": "Maurice"
+            },
+            {
+                "id": "3",
+                "text": "Hugsy"
+            },
+            {
+                "id": "4",
+                "text": "Alicia May Emory"
+            }
+        ],
+        "correctAnswersIds": [
+            "4"
+        ]
+    },
+    {
+        "id": "4",
+        "text": "Which famous actor’s butt does Joey play in a shower scene?",
+        "answers": [
+            {
+                "id": "1",
+                "text": "Bruce Willis"
+            },
+            {
+                "id": "2",
+                "text": "Al Pacino"
+            },
+            {
+                "id": "3",
+                "text": "Charlton Heston"
+            },
+            {
+                "id": "4",
+                "text": "Jeff Goldblum"
+            }
+        ],
+        "correctAnswersIds": [
+            "2"
+        ]
+    },
+    {
+        "id": "5",
+        "text": "What is the name of Joey’s character in the commercial for opening milk cartons?",
+        "answers": [
+            {
+                "id": "1",
+                "text": "Mike"
+            },
+            {
+                "id": "2",
+                "text": "Tommy"
+            },
+            {
+                "id": "3",
+                "text": "Kevin"
+            },
+            {
+                "id": "4",
+                "text": "Drake"
+            }
+        ],
+        "correctAnswersIds": [
+            "3"
+        ]
+    },
+    {
+        "id": "6",
+        "text": "Which are of the main characters of the show",
+        "answers": [
+            {
+                "id": "1",
+                "text": "Mike"
+            },
+            {
+                "id": "2",
+                "text": "Pheope"
+            },
+            {
+                "id": "3",
+                "text": "Joey"
+            },
+            {
+                "id": "4",
+                "text": "Ugly naked guy"
+            }
+        ],
+        "correctAnswersIds": [
+            "2",
+            "3"
+        ]
+    }
+]

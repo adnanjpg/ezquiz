@@ -1,26 +1,53 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/*
+palette:
+https://colorhunt.co/palette/554994f675a8f29393ffccb3
+#554994
+#F675A8
+#F29393
+#FFCCB3
+
+AND
+
+#ace1af
+*/
+
+.bg-primary {
+  background-color: #554994;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.bg-secondary {
+  background-color: #F675A8;
 }
 
-* {
-  box-sizing: border-box;
+.bg-cool {
+  background-color: #ace1af
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+.primary-button {
+  background-color: #554994;
+  padding: .6em .9em;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.secondary-button {
+  background-color: #F675A8;
+  padding: .6em .9em;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.secondary-button:disabled {
+  background-color: #FFCCB3;
+}
+
+.secondary-button-bordered {
+  border: 1px solid #F675A8;
+  padding: .6em .9em;
+  color: #F675A8;
+  border-radius: 5px;
 }
