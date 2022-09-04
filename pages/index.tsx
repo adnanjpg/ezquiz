@@ -1,14 +1,8 @@
-
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Quiz from '../features/quiz/comps/Quiz'
+import type { NextPage } from "next"
+import Quiz from "../features/quiz/comps/Quiz"
 
 const Home: NextPage = () => {
-  return (
-    <div className="App">
-      <Quiz></Quiz>
-    </div>
-  )
+  return <Quiz></Quiz>
 }
 
 export default Home

@@ -92,8 +92,6 @@ export const selectFinalScore = (state: RootState): [number, number] => {
     const quests = quiz.questions
     const sAnswers = quiz.selectedAnswers
 
-
-
     let score = 0
     let totalScore = quests.length
 
@@ -190,8 +188,6 @@ export const setToNextQuestion = (): AppThunk =>
             throw new Error("Ur id should be int convertible!!!");
         }
     };
-
-
 
 export const quizSlice = createSlice(
     {

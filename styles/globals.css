@@ -1,6 +1,6 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 /*
 palette:
@@ -20,34 +20,43 @@ AND
 }
 
 .bg-secondary {
-  background-color: #F675A8;
+  background-color: #f675a8;
 }
 
 .bg-cool {
-  background-color: #ace1af
+  background-color: #ace1af;
 }
 
 .primary-button {
   background-color: #554994;
-  padding: .6em .9em;
+  padding: 0.6em 0.9em;
   color: #fff;
   border-radius: 5px;
 }
 
 .secondary-button {
-  background-color: #F675A8;
-  padding: .6em .9em;
+  background-color: #f675a8;
+  padding: 0.6em 0.9em;
   color: #fff;
   border-radius: 5px;
 }
 
 .secondary-button:disabled {
-  background-color: #FFCCB3;
+  background-color: #ffccb3;
 }
 
 .secondary-button-bordered {
-  border: 1px solid #F675A8;
-  padding: .6em .9em;
-  color: #F675A8;
+  border: 1px solid #f675a8;
+  padding: 0.6em 0.9em;
+  color: #f675a8;
   border-radius: 5px;
+}
+
+input {
+  border: solid 1px #ddd;
+}
+input:focus {
+  outline: none !important;
+  border: 1px solid #ffccb3;
+  box-shadow: 0 0 10px #f29393;
 }
