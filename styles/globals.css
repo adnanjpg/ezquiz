@@ -35,6 +35,10 @@ AND
   border-radius: 5px;
 }
 
+.primary-button:disabled {
+  background-color: #ffccb3;
+}
+
 .secondary-button {
   background-color: #f675a8;
   padding: 0.6em 0.9em;
