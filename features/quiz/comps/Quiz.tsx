@@ -1,4 +1,4 @@
-import CenterMiddle from "../../../app/comps/center-vertical"
+import CenterVertical from "../../../app/comps/center-vertical"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
 import {
@@ -22,7 +22,6 @@ import {
   setProgState,
   QuizProgressState,
   selectQuizIsOngoing,
-  selectAnyQuestionIsSelecteed,
   selectFinalScore,
   resetQuiz,
 } from "../quizSlice"
@@ -33,10 +32,10 @@ export default () => {
   const isFinished = useAppSelector(selectQuizIsFinished)
   const isOngoing = useAppSelector(selectQuizIsOngoing)
 
-  if (!hasStarted) return <NotStartedQuiz></NotStartedQuiz>
-  if (isOngoing) return <QuizStateOngoing></QuizStateOngoing>
-  if (isConfirmingFinish) return <ConfirmFinish></ConfirmFinish>
-  if (isFinished) return <QuizFinished></QuizFinished>
+  if (!hasStarted) return <NotStartedQuiz />
+  if (isOngoing) return <QuizStateOngoing />
+  if (isConfirmingFinish) return <ConfirmFinish />
+  if (isFinished) return <QuizFinished />
 
   return <></>
 }
@@ -69,7 +68,7 @@ function ConfirmFinish() {
   const finish = () => dispatch(setProgState(QuizProgressState.Finished))
 
   return (
-    <CenterMiddle>
+    <CenterVertical>
       <div className="text-xl my-4">
         Are you sure you wanna finish this quiz?
       </div>
@@ -81,7 +80,7 @@ function ConfirmFinish() {
           Yes go on
         </button>
       </div>
-    </CenterMiddle>
+    </CenterVertical>
   )
 }
 
@@ -130,13 +129,13 @@ function QuizStateOngoing() {
       <div className="grow">
         <div className="flex flex-col h-full">
           <div className="my-auto">
-            <ShowSelectedQuestion></ShowSelectedQuestion>
+            <ShowSelectedQuestion />
           </div>
         </div>
       </div>
 
       <div className="h-12">
-        <ShowSelectableQuestions></ShowSelectableQuestions>
+        <ShowSelectableQuestions />
       </div>
     </div>
   )
@@ -269,13 +268,9 @@ function ShowQAnswerCheckbox(ans: QuestionAnswer) {
 }
 
 function ShowSelectableQuestions() {
-  const dispatch = useAppDispatch()
-
   const ids = useAppSelector(selectAllQuestionIds)
 
   const isLast = useAppSelector(selectIsInLastQuestion)
-
-  const nextQ = () => (isLast ? null : dispatch(setToNextQuestion()))
 
   return (
     <div className="flex flex-row justify-between align-middle">

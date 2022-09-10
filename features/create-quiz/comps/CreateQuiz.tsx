@@ -1,14 +1,12 @@
 import { ChangeEvent, useState } from "react"
 
-import { FaTimes } from "react-icons/fa"
+import { FaPlus, FaTimes } from "react-icons/fa"
 
 import CenterHorizontal from "../../../app/comps/center-horizontal"
-import CenterVertical from "../../../app/comps/center-vertical"
 import JoinComps from "../../../app/comps/join-comps"
 import { useAppBatch, useAppDispatch, useAppSelector } from "../../../app/hooks"
 import {
   createAnswer,
-  addQuestion,
   CreateQuizStep,
   selectCanAddAnswer,
   selectCurrentStep,
@@ -18,14 +16,18 @@ import {
   selectCurrentQuestionAnswers,
   updateAnswer,
   removeAnswer,
+  selectCurrentQuestion,
+  selectAllQuestions,
+  updateQuestion,
+  selectCanAddQuestion,
+  createQuestion,
 } from "../createQuizSlice"
 
 export default () => {
   const step = useAppSelector(selectCurrentStep)
 
-  if (step === CreateQuizStep.writingTitle) return <QuizTitle></QuizTitle>
-  if (step === CreateQuizStep.creatingQuestions)
-    return <AddQuestions></AddQuestions>
+  if (step === CreateQuizStep.writingTitle) return <QuizTitle />
+  if (step === CreateQuizStep.creatingQuestions) return <AddQuestions />
 
   return <></>
 }
@@ -38,8 +40,7 @@ function QuizTitle() {
   const onClick = () => {
     useAppBatch(() => {
       dispatch(setConfirmedTitle(title))
-      dispatch(addQuestion({ id: "1" }))
-      dispatch(setSelectedQuestionId("1"))
+      dispatch(createQuestion)
       dispatch(setStep(CreateQuizStep.creatingQuestions))
     })
   }
@@ -66,27 +67,55 @@ function QuizTitle() {
 }
 
 function AddQuestions() {
-  const [qtitle, setqtitle] = useState("")
-
   return (
-    <CenterVertical>
-      <CenterHorizontal>
-        <QuestionTitle />
-        <hr className="w-40 m-4 border-solid" />
-        <Answers />
-      </CenterHorizontal>
-    </CenterVertical>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="grow">
+        <div className="flex flex-col h-full">
+          <div className="my-auto">
+            <ShowSelectedQuestion />
+          </div>
+        </div>
+      </div>
+
+      <div className="h-12">
+        <ShowSelectableQuestions />
+      </div>
+    </div>
+  )
+}
+
+function ShowSelectedQuestion() {
+  return (
+    <CenterHorizontal>
+      <QuestionTitle />
+      <hr className="w-40 m-4 border-solid" />
+      <Answers />
+    </CenterHorizontal>
   )
 }
 
 function QuestionTitle() {
-  const [qtitle, setqtitle] = useState("")
+  const dispatch = useAppDispatch()
 
+  const question = useAppSelector(selectCurrentQuestion)
+
+  if (!question) throw new Error("NO QUESTION")
+
+  const text = question.text
+
+  const onChangeSetTitle = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      updateQuestion({
+        ...question,
+        text: event.target.value,
+      })
+    )
+  }
   return (
     <input
       placeholder="Question Title"
-      value={qtitle}
-      onChange={(event) => setqtitle(event.target.value)}
+      value={text}
+      onChange={onChangeSetTitle}
     />
   )
 }
@@ -143,5 +172,63 @@ function AnswerItem(props: { id: string }) {
         <FaTimes />
       </button>
     </div>
+  )
+}
+
+function ShowSelectableQuestions() {
+  const questions = useAppSelector(selectAllQuestions)
+
+  const ids = questions?.map((e) => e.id)
+
+  if (!ids) return <></>
+
+  return (
+    <div className="w-screen">
+      <div className="flex flex-row justify-center">
+        <div className="grow flex  flex-wrap overflow-x-visible">
+          {ids?.map(ShowSelectableQuestion)}
+        </div>
+        <AddQuestionButton />
+      </div>
+    </div>
+  )
+}
+
+function AddQuestionButton() {
+  const canAddQuestion = useAppSelector(selectCanAddQuestion)
+
+  if (!canAddQuestion) return <></>
+
+  const dispatch = useAppDispatch()
+
+  const onClickAdd = () => {
+    dispatch(createQuestion())
+  }
+
+  return (
+    <div className="w-3">
+      <button onClick={onClickAdd}>
+        <FaPlus />
+      </button>
+    </div>
+  )
+}
+
+function ShowSelectableQuestion(id: string) {
+  const dispatch = useAppDispatch()
+
+  const switchToQuestion = () => dispatch(setSelectedQuestionId(id))
+
+  return (
+    <span
+      className={"bg-cool px-2 py-2 mx-1 rounded-md cursor-pointer"}
+      key={id}
+    >
+      <a>
+        <span className="text-white" onClick={switchToQuestion}>
+          {id}
+        </span>
+      </a>
+    </span>
   )
 }

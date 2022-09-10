@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { RootState } from "../../app/store"
+import { RootState, store } from "../../app/store"
 import { Question, QuestionAnswer } from "../quiz/quizSlice"
 
 const maxAnswerCount = 10
 const minAnswerCount = 2
+
+const maxQuestionCount = 100
 
 export enum CreateQuizStep {
   writingTitle,
@@ -37,8 +39,11 @@ const initialState: CreateQuizState =
 export const selectCurrentStep = (state: RootState) =>
   state.createQuiz.currentStep
 
+export const selectAllQuestions = (state: RootState) =>
+  state.createQuiz.questions
+
 export const selectCurrentQuestion = (state: RootState) =>
-  state.createQuiz.questions?.find(
+  selectAllQuestions(state)?.find(
     (e) => e.id === state.createQuiz.selectedQuesstionId
   )
 
@@ -55,6 +60,11 @@ export const selectCanAddAnswer = (state: RootState) => {
     // or the answers' length should be under max
     (!answers || answers.length <= maxAnswerCount)
   )
+}
+export const selectCanAddQuestion = (state: RootState) => {
+  const quests = state.createQuiz.questions
+
+  return !quests || quests.length <= maxQuestionCount
 }
 
 export const selectCanGoNextQuestion = (state: RootState) => {
@@ -80,7 +90,7 @@ export const createQuizSlice = createSlice({
     setSelectedQuestionId: (state, action: PayloadAction<string>) => {
       state.selectedQuesstionId = action.payload
     },
-    createAnswer: (state, action: PayloadAction) => {
+    createAnswer: (state) => {
       const qid = state.selectedQuesstionId
 
       state.questions = state.questions!.map((e) => {
@@ -132,11 +142,20 @@ export const createQuizSlice = createSlice({
         return e
       })
     },
-    addQuestion: (state, action: PayloadAction<Question>) => {
+    createQuestion: (state) => {
+      const questions = state.questions ?? []
+
+      const lastQ = questions ? questions[questions.length - 1] : null
+      const lastId = lastQ?.id ?? "0"
+      const newId = +lastId + 1 + ""
+
       if (!state.questions) state.questions = []
 
-      state.questions = [...state.questions, action.payload]
+      state.questions = [...state.questions, { id: newId }]
+
+      state.selectedQuesstionId = newId
     },
+
     removeQuestion: (state, action: PayloadAction<Question>) => {
       state.questions = state.questions?.filter(
         (e) => e.id !== action.payload.id
@@ -156,7 +175,7 @@ export const {
   setTitle,
   setStep,
   setSelectedQuestionId,
-  addQuestion,
+  createQuestion,
   removeQuestion,
   updateQuestion,
   createAnswer,

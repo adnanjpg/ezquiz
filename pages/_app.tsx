@@ -8,7 +8,7 @@ import Sandwich from "../app/comps/sandwich"
 
 function AppWrapper(props: { children: JSX.Element }): JSX.Element {
   return (
-    <div className="flex flex-row h-screen">
+    <div className="flex flex-row h-screen overflow-x-hidden">
       <Sandwich bun={<div className="w-3 sm:w-10 md:w-36 lg:w-96"></div>}>
         <div className="grow">{props.children}</div>
       </Sandwich>
