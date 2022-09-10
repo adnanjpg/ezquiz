@@ -148,9 +148,13 @@ function ShowSelectedQuestion() {
   return (
     <div>
       <div className="my-3">{selected.text}</div>
-      <div key={selected.id}>
-        <ShowQuestionAnswers></ShowQuestionAnswers>
-      </div>
+      <>
+        {selected.answers && (
+          <div key={selected.id}>
+            <ShowQuestionAnswers></ShowQuestionAnswers>
+          </div>
+        )}
+      </>
     </div>
   )
 }
@@ -160,13 +164,15 @@ function ShowQuestionAnswers() {
 
   let answers = selectedQ.answers
 
+  if (!answers) throw new Error("No Answers")
+
   let isMultiSelection = isQuestionMultiSelection(selectedQ)
 
   if (isMultiSelection) {
     return <div>{answers.map(ShowQAnswerCheckbox)}</div>
   }
 
-  return ShowQuestionAnswersRadio()
+  return <ShowQuestionAnswersRadio />
 }
 
 function ShowQuestionAnswersRadio() {
@@ -188,6 +194,8 @@ function ShowQuestionAnswersRadio() {
   const selectedAnswerId = selectedAnswers?.at(0)
 
   let answers = selectedQ.answers
+
+  if (!answers) throw new Error("No Answers")
 
   const onToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()

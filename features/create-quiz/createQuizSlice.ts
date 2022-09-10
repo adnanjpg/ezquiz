@@ -1,39 +1,167 @@
-import { Question, QuestionAnswer } from "@prisma/client"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
+import { Question, QuestionAnswer } from "../quiz/quizSlice"
 
-interface CreateQuizState {
-  title?: string
-  questions?: Array<Question>
-  answers?: Array<QuestionAnswer>
-  currentStep: CreateQuizStep
-}
+const maxAnswerCount = 10
+const minAnswerCount = 2
 
 export enum CreateQuizStep {
   writingTitle,
   creatingQuestions,
 }
 
-const initialState: CreateQuizState = {
-  currentStep: CreateQuizStep.writingTitle,
+const workingOn: CreateQuizStep = CreateQuizStep.creatingQuestions
+
+interface CreateQuizState {
+  title?: string
+  questions?: Array<Question>
+  answers?: Array<QuestionAnswer>
+  currentStep: CreateQuizStep
+  selectedQuesstionId?: string
 }
+
+const initialState: CreateQuizState =
+  workingOn == CreateQuizStep.creatingQuestions
+    ? {
+        currentStep: CreateQuizStep.creatingQuestions,
+        title: "Test Title",
+        questions: [{ id: "1" }],
+        selectedQuesstionId: "1",
+      }
+    : {
+        currentStep: CreateQuizStep.writingTitle,
+      }
+
+// #region selectors
 
 export const selectCurrentStep = (state: RootState) =>
   state.createQuiz.currentStep
+
+export const selectCurrentQuestion = (state: RootState) =>
+  state.createQuiz.questions?.find(
+    (e) => e.id === state.createQuiz.selectedQuesstionId
+  )
+
+export const selectCurrentQuestionAnswers = (state: RootState) =>
+  selectCurrentQuestion(state)?.answers
+
+export const selectCanAddAnswer = (state: RootState) => {
+  const q = selectCurrentQuestion(state)
+  const answers = q?.answers
+
+  return (
+    q &&
+    // should be either has not inited answers yet
+    // or the answers' length should be under max
+    (!answers || answers.length <= maxAnswerCount)
+  )
+}
+
+export const selectCanGoNextQuestion = (state: RootState) => {
+  const q = selectCurrentQuestion(state)
+  const answers = q?.answers
+
+  return q && answers && answers.length >= minAnswerCount
+}
+
+//#endregion
 
 export const createQuizSlice = createSlice({
   name: "create-quiz",
   initialState,
   reducers: {
+    // #region  reducers
     setStep: (state, action: PayloadAction<CreateQuizStep>) => {
       state.currentStep = action.payload
     },
     setTitle: (state, action: PayloadAction<string>) => {
       state.title = action.payload
     },
+    setSelectedQuestionId: (state, action: PayloadAction<string>) => {
+      state.selectedQuesstionId = action.payload
+    },
+    createAnswer: (state, action: PayloadAction) => {
+      const qid = state.selectedQuesstionId
+
+      state.questions = state.questions!.map((e) => {
+        if (e.id === qid) {
+          const answers = e.answers ?? []
+
+          const lastAnswer = answers ? answers[answers.length - 1] : null
+          const lastId = lastAnswer?.id ?? "0"
+          const newId = +lastId + 1
+
+          return { ...e, answers: [...(e.answers ?? []), { id: newId + "" }] }
+        }
+
+        return e
+      })
+    },
+    updateAnswer: (state, action: PayloadAction<QuestionAnswer>) => {
+      const ans = action.payload
+      const ansid = ans.id
+      const qid = state.selectedQuesstionId
+
+      state.questions = state.questions!.map((e) => {
+        if (e.id === qid) {
+          const answers = e.answers ?? []
+
+          return {
+            ...e,
+            answers: answers.map((r) => (r.id === ansid ? ans : r)),
+          }
+        }
+        console.log("e ")
+        return e
+      })
+    },
+    removeAnswer: (state, action: PayloadAction<string>) => {
+      const ansid = action.payload
+      const qid = state.selectedQuesstionId
+
+      state.questions = state.questions!.map((e) => {
+        if (e.id === qid) {
+          const answers = e.answers ?? []
+
+          return {
+            ...e,
+            answers: answers.filter((r) => r.id !== ansid),
+          }
+        }
+        console.log("e ")
+        return e
+      })
+    },
+    addQuestion: (state, action: PayloadAction<Question>) => {
+      if (!state.questions) state.questions = []
+
+      state.questions = [...state.questions, action.payload]
+    },
+    removeQuestion: (state, action: PayloadAction<Question>) => {
+      state.questions = state.questions?.filter(
+        (e) => e.id !== action.payload.id
+      )
+    },
+    updateQuestion: (state, action: PayloadAction<Question>) => {
+      const newQ = action.payload
+      state.questions = state.questions?.map((e) =>
+        e.id === newQ.id ? newQ : e
+      )
+    },
+    // #endregion
   },
 })
 
-export const { setTitle, setStep } = createQuizSlice.actions
+export const {
+  setTitle,
+  setStep,
+  setSelectedQuestionId,
+  addQuestion,
+  removeQuestion,
+  updateQuestion,
+  createAnswer,
+  updateAnswer,
+  removeAnswer,
+} = createQuizSlice.actions
 
 export default createQuizSlice.reducer
