@@ -29,6 +29,8 @@ export default (props: {
 
   const newChildren = new Array() as Array<JSX.Element>
 
+  let compid = 0
+
   for (let i = 0; i < children.length; i++) {
     const isLast = i + 1 === children.length
 
@@ -37,7 +39,9 @@ export default (props: {
     newChildren.push(element)
 
     if (!isLast) {
-      newChildren.push(props.joint)
+      newChildren.push(
+        <div key={"joint_with_id" + compid++}>{props.joint}</div>
+      )
     }
   }
 
