@@ -1,8 +1,9 @@
 import { ChangeEvent, useState } from "react"
 
 import { FaPlus, FaTimes } from "react-icons/fa"
-
 import CenterHorizontal from "../../../app/comps/center-horizontal"
+import CenterVertical from "../../../app/comps/center-vertical"
+
 import JoinComps from "../../../app/comps/join-comps"
 import { useAppBatch, useAppDispatch, useAppSelector } from "../../../app/hooks"
 import {
@@ -68,16 +69,12 @@ function QuizTitle() {
 
 function AddQuestions() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col  h-screen">
       <div className="grow">
-        <div className="flex flex-col h-full">
-          <div className="my-auto">
-            <ShowSelectedQuestion />
-          </div>
-        </div>
+        <ShowSelectedQuestion />
       </div>
 
-      <div className="h-12">
+      <div className="h-20">
         <ShowSelectableQuestions />
       </div>
     </div>
@@ -86,11 +83,11 @@ function AddQuestions() {
 
 function ShowSelectedQuestion() {
   return (
-    <CenterHorizontal>
+    <CenterVertical className="items-center">
       <QuestionTitle />
       <hr className="w-40 m-4 border-solid" />
       <Answers />
-    </CenterHorizontal>
+    </CenterVertical>
   )
 }
 
@@ -114,7 +111,7 @@ function QuestionTitle() {
   return (
     <input
       placeholder="Question Title"
-      value={text}
+      value={text ?? ""}
       onChange={onChangeSetTitle}
     />
   )
@@ -183,13 +180,13 @@ function ShowSelectableQuestions() {
   if (!ids) return <></>
 
   return (
-    <div className="w-screen">
-      <div className="flex flex-row justify-center">
-        <div className="grow flex  flex-wrap overflow-x-visible">
-          {ids?.map(ShowSelectableQuestion)}
-        </div>
-        <AddQuestionButton />
+    <div>
+      <div className="max-w-full flex flex-wrap ">
+        {ids?.map((id) => (
+          <ShowSelectableQuestion key={id} id={id} />
+        ))}
       </div>
+      <AddQuestionButton />
     </div>
   )
 }
@@ -214,16 +211,15 @@ function AddQuestionButton() {
   )
 }
 
-function ShowSelectableQuestion(id: string) {
+function ShowSelectableQuestion(props: { id: string }) {
   const dispatch = useAppDispatch()
+
+  const id = props.id
 
   const switchToQuestion = () => dispatch(setSelectedQuestionId(id))
 
   return (
-    <span
-      className={"bg-cool px-2 py-2 mx-1 rounded-md cursor-pointer"}
-      key={id}
-    >
+    <span className="bg-cool px-2 py-2 mx-1 rounded-md cursor-pointer" key={id}>
       <a>
         <span className="text-white" onClick={switchToQuestion}>
           {id}

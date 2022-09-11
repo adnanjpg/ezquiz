@@ -121,7 +121,6 @@ export const createQuizSlice = createSlice({
             answers: answers.map((r) => (r.id === ansid ? ans : r)),
           }
         }
-        console.log("e ")
         return e
       })
     },
@@ -138,7 +137,6 @@ export const createQuizSlice = createSlice({
             answers: answers.filter((r) => r.id !== ansid),
           }
         }
-        console.log("e ")
         return e
       })
     },
