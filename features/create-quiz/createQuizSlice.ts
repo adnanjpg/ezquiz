@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState, store } from "../../app/store"
+import { trpc } from "../../utils/trpc"
 import { Question, QuestionAnswer } from "../quiz/quizSlice"
 
 const maxAnswerCount = 10
 const minAnswerCount = 2
 
-const maxQuestionCount = 100
+const maxQuestionCount = 10
 
 export enum CreateQuizStep {
   writingTitle,

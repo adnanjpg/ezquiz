@@ -1,11 +1,11 @@
 import { ChangeEvent, useState } from "react"
 
-import { FaPlus, FaTimes } from "react-icons/fa"
-import CenterHorizontal from "../../../app/comps/center-horizontal"
+import { FaTimes } from "react-icons/fa"
 import CenterVertical from "../../../app/comps/center-vertical"
 
 import JoinComps from "../../../app/comps/join-comps"
 import { useAppBatch, useAppDispatch, useAppSelector } from "../../../app/hooks"
+import { trpc } from "../../../utils/trpc"
 import {
   createAnswer,
   CreateQuizStep,
@@ -76,7 +76,7 @@ function AddQuestions() {
         <ShowSelectedQuestion />
       </div>
 
-      <div className="h-20">
+      <div className="h-40">
         <ShowSelectableQuestions />
       </div>
     </div>
@@ -213,7 +213,11 @@ function ShowSelectableQuestions() {
           <ShowSelectableQuestion key={id} id={id} />
         ))}
       </div>
-      <AddQuestionButton />
+      <div className="flex flex-row justify-center my-4">
+        <AddQuestionButton />
+        <span className="w-4"></span>
+        <SubmitQuiz />
+      </div>
     </div>
   )
 }
@@ -230,11 +234,47 @@ function AddQuestionButton() {
   }
 
   return (
-    <div className="w-3">
-      <button onClick={onClickAdd}>
-        <FaPlus />
+    <button onClick={onClickAdd} className="secondary-button">
+      Add Question
+    </button>
+  )
+}
+
+function SubmitQuiz() {
+  const mutation = trpc.useMutation(["quiz.create"])
+  const quests = useAppSelector(selectAllQuestions)
+
+  if (!quests) throw new Error("NO QUESTIONS")
+
+  const onClickSubmitQuiz = () => {
+    mutation.mutate({
+      questions: quests.map((quest) => {
+        const anss = quest.answers ?? []
+        return {
+          text: quest.text ?? "",
+          answers: anss.map((ans) => {
+            return {
+              text: ans.text ?? "",
+              iscorrect: true,
+            }
+          }),
+        }
+      }),
+    })
+  }
+
+  return (
+    <>
+      <button
+        disabled={mutation.isLoading}
+        onClick={onClickSubmitQuiz}
+        className="primary-button"
+      >
+        Submit
       </button>
-    </div>
+      {mutation.isSuccess && <span>Submitted successfully!!</span>}
+      {mutation.isError && <span>{mutation.error.message}</span>}
+    </>
   )
 }
 
