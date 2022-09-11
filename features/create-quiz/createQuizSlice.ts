@@ -42,13 +42,28 @@ export const selectCurrentStep = (state: RootState) =>
 export const selectAllQuestions = (state: RootState) =>
   state.createQuiz.questions
 
+const selectCurrentQuestionId = (state: RootState) => {
+  const selectedQuestionId = state.createQuiz.selectedQuesstionId
+
+  if (!selectedQuestionId) throw new Error("NO SELECTED QUESTION")
+
+  return selectedQuestionId
+}
+
+const selectQuestionWithId = (props: { state: RootState; id: string }) =>
+  selectAllQuestions(props.state)?.find((e) => e.id === props.id)
+
+const selectQuestionAnswers = (props: { state: RootState; id: string }) =>
+  selectQuestionWithId(props)?.answers
+
 export const selectCurrentQuestion = (state: RootState) =>
-  selectAllQuestions(state)?.find(
-    (e) => e.id === state.createQuiz.selectedQuesstionId
-  )
+  selectQuestionWithId({
+    state: state,
+    id: selectCurrentQuestionId(state),
+  })
 
 export const selectCurrentQuestionAnswers = (state: RootState) =>
-  selectCurrentQuestion(state)?.answers
+  selectQuestionAnswers({ state, id: selectCurrentQuestionId(state) })
 
 export const selectCanAddAnswer = (state: RootState) => {
   const q = selectCurrentQuestion(state)
@@ -61,6 +76,7 @@ export const selectCanAddAnswer = (state: RootState) => {
     (!answers || answers.length <= maxAnswerCount)
   )
 }
+
 export const selectCanAddQuestion = (state: RootState) => {
   const quests = state.createQuiz.questions
 
@@ -73,7 +89,38 @@ export const selectCanGoNextQuestion = (state: RootState) => {
 
   return q && answers && answers.length >= minAnswerCount
 }
+export const selectCorrectAnswerIdsForQ = (props: {
+  state: RootState
+  id: string
+}) => {
+  const selectedQ = selectQuestionWithId(props)
 
+  if (!selectedQ) throw new Error("NO QUESTION WITH ID")
+
+  return selectedQ.correctAnswersIds
+}
+
+const selectIsAnswerCorrect = (props: {
+  state: RootState
+  qid: string
+  ansid: string
+}) => {
+  const ansIds = selectCorrectAnswerIdsForQ({
+    state: props.state,
+    id: props.qid,
+  })
+
+  return ansIds && ansIds.includes(props.ansid)
+}
+
+export const selectIsAnswerCorrectCQ = (props: {
+  state: RootState
+  ansid: string
+}) =>
+  selectIsAnswerCorrect({
+    ...props,
+    qid: selectCurrentQuestionId(props.state),
+  })
 //#endregion
 
 export const createQuizSlice = createSlice({
@@ -123,6 +170,25 @@ export const createQuizSlice = createSlice({
         }
         return e
       })
+    },
+    setAnswerIsCorrect: (
+      state,
+      action: PayloadAction<{ id: string; iscorrect: boolean }>
+    ) => {
+      const selectedQId = state.selectedQuesstionId
+      const ansId = action.payload.id
+      const iscorrect = action.payload.iscorrect
+
+      state.questions = state.questions?.map((question) =>
+        question.id === selectedQId
+          ? {
+              ...question,
+              correctAnswersIds: iscorrect
+                ? [...(question.correctAnswersIds ?? []), ansId]
+                : question.correctAnswersIds?.filter((id) => id !== ansId),
+            }
+          : question
+      )
     },
     removeAnswer: (state, action: PayloadAction<string>) => {
       const ansid = action.payload
@@ -178,6 +244,7 @@ export const {
   updateQuestion,
   createAnswer,
   updateAnswer,
+  setAnswerIsCorrect,
   removeAnswer,
 } = createQuizSlice.actions
 

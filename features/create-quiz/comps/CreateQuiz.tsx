@@ -22,6 +22,8 @@ import {
   updateQuestion,
   selectCanAddQuestion,
   createQuestion,
+  selectIsAnswerCorrectCQ,
+  setAnswerIsCorrect,
 } from "../createQuizSlice"
 
 export default () => {
@@ -155,6 +157,12 @@ function AnswerItem(props: { id: string }) {
 
   if (!answer) throw new Error("INVALID ANSWER")
 
+  const ansid = answer.id
+
+  const iscorrect = useAppSelector((state) =>
+    selectIsAnswerCorrectCQ({ state: state, ansid })
+  )
+
   const dispatch = useAppDispatch()
 
   const onChangeUpdateAnswer = (event: ChangeEvent<HTMLInputElement>) =>
@@ -162,9 +170,28 @@ function AnswerItem(props: { id: string }) {
 
   const onClickRemoveAnswer = () => dispatch(removeAnswer(id))
 
+  const onChangeIsCorrect = (event: ChangeEvent<HTMLInputElement>) => {
+    event.persist()
+
+    const isc = event.target.checked
+
+    dispatch(
+      setAnswerIsCorrect({
+        id: ansid,
+        iscorrect: isc,
+      })
+    )
+  }
+
   return (
     <div>
       <input onChange={onChangeUpdateAnswer} value={answer.text || ""} />
+      <input
+        type="checkbox"
+        checked={iscorrect === true}
+        onChange={onChangeIsCorrect}
+      />
+
       <button onClick={onClickRemoveAnswer}>
         <FaTimes />
       </button>
