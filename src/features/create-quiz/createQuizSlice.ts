@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { RootState, store } from "~/app/store"
+import { RootState } from "~/app/store"
 import { Question, QuestionAnswer } from "~/features/quiz/quizSlice"
 
 const maxAnswerCount = 10
@@ -12,38 +12,30 @@ export enum CreateQuizStep {
   creatingQuestions,
 }
 
-const workingOn: CreateQuizStep = CreateQuizStep.creatingQuestions
-
 interface CreateQuizState {
   title?: string
   questions?: Array<Question>
   answers?: Array<QuestionAnswer>
   currentStep: CreateQuizStep
-  selectedQuesstionId?: string
+  selectedQuestionId?: string
 }
 
-const initialState: CreateQuizState =
-  workingOn == CreateQuizStep.creatingQuestions
-    ? {
-        currentStep: CreateQuizStep.creatingQuestions,
-        title: "Test Title",
-        questions: [{ id: "1" }],
-        selectedQuesstionId: "1",
-      }
-    : {
-        currentStep: CreateQuizStep.writingTitle,
-      }
+const initialState: CreateQuizState = {
+  currentStep: CreateQuizStep.writingTitle,
+}
 
 // #region selectors
 
 export const selectCurrentStep = (state: RootState) =>
   state.createQuiz.currentStep
 
+export const selectQuizTitle = (state: RootState) => state.createQuiz.title
+
 export const selectAllQuestions = (state: RootState) =>
   state.createQuiz.questions
 
 const selectCurrentQuestionId = (state: RootState) => {
-  const selectedQuestionId = state.createQuiz.selectedQuesstionId
+  const selectedQuestionId = state.createQuiz.selectedQuestionId
 
   if (!selectedQuestionId) throw new Error("NO SELECTED QUESTION")
 
@@ -135,10 +127,10 @@ export const createQuizSlice = createSlice({
       state.title = action.payload
     },
     setSelectedQuestionId: (state, action: PayloadAction<string>) => {
-      state.selectedQuesstionId = action.payload
+      state.selectedQuestionId = action.payload
     },
     createAnswer: (state) => {
-      const qid = state.selectedQuesstionId
+      const qid = state.selectedQuestionId
 
       state.questions = state.questions!.map((e) => {
         if (e.id === qid) {
@@ -157,7 +149,7 @@ export const createQuizSlice = createSlice({
     updateAnswer: (state, action: PayloadAction<QuestionAnswer>) => {
       const ans = action.payload
       const ansid = ans.id
-      const qid = state.selectedQuesstionId
+      const qid = state.selectedQuestionId
 
       state.questions = state.questions!.map((e) => {
         if (e.id === qid) {
@@ -175,7 +167,7 @@ export const createQuizSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; iscorrect: boolean }>,
     ) => {
-      const selectedQId = state.selectedQuesstionId
+      const selectedQId = state.selectedQuestionId
       const ansId = action.payload.id
       const iscorrect = action.payload.iscorrect
 
@@ -192,7 +184,7 @@ export const createQuizSlice = createSlice({
     },
     removeAnswer: (state, action: PayloadAction<string>) => {
       const ansid = action.payload
-      const qid = state.selectedQuesstionId
+      const qid = state.selectedQuestionId
 
       state.questions = state.questions!.map((e) => {
         if (e.id === qid) {
@@ -217,7 +209,7 @@ export const createQuizSlice = createSlice({
 
       state.questions = [...state.questions, { id: newId }]
 
-      state.selectedQuesstionId = newId
+      state.selectedQuestionId = newId
     },
 
     removeQuestion: (state, action: PayloadAction<Question>) => {

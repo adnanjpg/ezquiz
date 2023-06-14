@@ -23,7 +23,9 @@ import {
   createQuestion,
   selectIsAnswerCorrectCQ,
   setAnswerIsCorrect,
+  selectQuizTitle,
 } from "~/features/create-quiz/createQuizSlice"
+import { setSelectedQuestion } from "~/features/quiz/quizSlice"
 import { api } from "~/utils/api"
 
 export default () => {
@@ -42,8 +44,9 @@ function QuizTitle() {
 
   const onClick = () => {
     useAppBatch(() => {
+      dispatch(setSelectedQuestionId("1"))
+      dispatch(createQuestion())
       dispatch(setConfirmedTitle(title))
-      dispatch(createQuestion)
       dispatch(setStep(CreateQuizStep.creatingQuestions))
     })
   }
@@ -242,12 +245,16 @@ function AddQuestionButton() {
 
 function SubmitQuiz() {
   const mutation = api.quizzes.create.useMutation()
+
+  const title = useAppSelector(selectQuizTitle)
   const quests = useAppSelector(selectAllQuestions)
 
+  if (!title) throw new Error("NO TITLE")
   if (!quests) throw new Error("NO QUESTIONS")
 
   const onClickSubmitQuiz = () => {
     mutation.mutate({
+      title: title,
       questions: quests.map((quest) => {
         const anss = quest.answers ?? []
         return {

@@ -5,6 +5,7 @@ export const quizzesRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
+        title: z.string(),
         questions: z.array(
           z.object({
             text: z.string(),
@@ -24,6 +25,7 @@ export const quizzesRouter = createTRPCRouter({
 
       const quiz = await ctx.prisma.quiz.create({
         data: {
+          title: input.title,
           creatorId: userId,
         },
       })

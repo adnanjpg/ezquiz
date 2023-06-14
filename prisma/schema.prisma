@@ -15,6 +15,7 @@ model User {
 model Quiz {
   id        Int    @id @default(autoincrement())
   creatorId String
+  title     String
 }
 
 model Question {
