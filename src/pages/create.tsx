@@ -1,6 +1,5 @@
 import { NextPage } from "next"
-import CreateQuiz from "../features/create-quiz/comps/CreateQuiz"
-import { trpc } from "../utils/trpc"
+import CreateQuiz from "~/features/create-quiz/comps/CreateQuiz"
 
 const CreatePage: NextPage = () => {
   // const mutation = trpc.useMutation(['quiz.create'])

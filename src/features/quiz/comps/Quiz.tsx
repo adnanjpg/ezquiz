@@ -1,6 +1,6 @@
-import CenterVertical from "../../../app/comps/center-vertical"
-import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { RootState } from "../../../app/store"
+import CenterVertical from "~/app/comps/center-vertical"
+import { useAppDispatch, useAppSelector } from "~/app/hooks"
+import { RootState } from "~/app/store"
 import {
   isAnswered,
   isAnswerSelected,
@@ -24,7 +24,7 @@ import {
   selectQuizIsOngoing,
   selectFinalScore,
   resetQuiz,
-} from "../quizSlice"
+} from "~/features/quiz/quizSlice"
 
 export default () => {
   const hasStarted = useAppSelector(selectQuizHasStarted)
@@ -184,7 +184,7 @@ function ShowQuestionAnswersRadio() {
     selectSelectedAnswersForQ({
       state: state as RootState,
       qid: qid,
-    })
+    }),
   )?.ansids
 
   // as this is a radio, there is only 1 selected value.
@@ -203,7 +203,7 @@ function ShowQuestionAnswersRadio() {
       setAnswer({
         ansid: e.target.value,
         qid: qid,
-      })
+      }),
     )
   }
 
@@ -239,7 +239,7 @@ function ShowQAnswerCheckbox(ans: QuestionAnswer) {
       state: state as RootState,
       qid: qid,
       ansid: ansid,
-    })
+    }),
   )
 
   const onToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -250,7 +250,7 @@ function ShowQAnswerCheckbox(ans: QuestionAnswer) {
         ansid: ans.id,
         qid: qid,
         ischecked: e.target.checked,
-      })
+      }),
     )
   }
 

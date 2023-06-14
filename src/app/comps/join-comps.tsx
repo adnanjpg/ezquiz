@@ -36,11 +36,13 @@ export default (props: {
 
     const element = children[i]
 
+    if (!element) continue
+
     newChildren.push(element)
 
     if (!isLast) {
       newChildren.push(
-        <div key={"joint_with_id" + compid++}>{props.joint}</div>
+        <div key={"joint_with_id" + compid++}>{props.joint}</div>,
       )
     }
   }

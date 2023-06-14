@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { AppThunk, RootState } from "../../app/store"
+import { AppThunk, RootState } from "~/app/store"
 
-import questions from "../../assets/questions.json"
+import questions from "~/assets/questions.json"
 
 export interface QuestionAnswer {
   id: string
@@ -136,7 +136,7 @@ export const selectFinalScore = (state: RootState): [number, number] => {
       // so what we're gonna do is this:
       // (count of selected answers that match the correct answers) / answerCount
       let correctSelectedCount = selectedAnswers.filter((e) =>
-        an.includes(e)
+        an.includes(e),
       ).length
 
       score += correctSelectedCount / correctAnswerCount
@@ -219,7 +219,7 @@ export const quizSlice = createSlice({
     // for checkboxes
     toggleAnswer: (
       state,
-      action: PayloadAction<{ qid: string; ansid: string; ischecked: boolean }>
+      action: PayloadAction<{ qid: string; ansid: string; ischecked: boolean }>,
     ) => {
       state.selectedAnswers = state.selectedAnswers.map((e) => {
         if (e.qid != action.payload.qid) return e
@@ -238,7 +238,7 @@ export const quizSlice = createSlice({
     // for radios, it invalidates all other options
     setAnswer: (
       state,
-      action: PayloadAction<{ qid: string; ansid: string }>
+      action: PayloadAction<{ qid: string; ansid: string }>,
     ) => {
       if (!state.selectedAnswers.some((e) => e.qid === action.payload.qid)) {
         state.selectedAnswers = [

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { RootState, store } from "../../app/store"
-import { trpc } from "../../utils/trpc"
-import { Question, QuestionAnswer } from "../quiz/quizSlice"
+import { RootState, store } from "~/app/store"
+import { Question, QuestionAnswer } from "~/features/quiz/quizSlice"
 
 const maxAnswerCount = 10
 const minAnswerCount = 2
@@ -174,7 +173,7 @@ export const createQuizSlice = createSlice({
     },
     setAnswerIsCorrect: (
       state,
-      action: PayloadAction<{ id: string; iscorrect: boolean }>
+      action: PayloadAction<{ id: string; iscorrect: boolean }>,
     ) => {
       const selectedQId = state.selectedQuesstionId
       const ansId = action.payload.id
@@ -188,7 +187,7 @@ export const createQuizSlice = createSlice({
                 ? [...(question.correctAnswersIds ?? []), ansId]
                 : question.correctAnswersIds?.filter((id) => id !== ansId),
             }
-          : question
+          : question,
       )
     },
     removeAnswer: (state, action: PayloadAction<string>) => {
@@ -223,13 +222,13 @@ export const createQuizSlice = createSlice({
 
     removeQuestion: (state, action: PayloadAction<Question>) => {
       state.questions = state.questions?.filter(
-        (e) => e.id !== action.payload.id
+        (e) => e.id !== action.payload.id,
       )
     },
     updateQuestion: (state, action: PayloadAction<Question>) => {
       const newQ = action.payload
       state.questions = state.questions?.map((e) =>
-        e.id === newQ.id ? newQ : e
+        e.id === newQ.id ? newQ : e,
       )
     },
     // #endregion

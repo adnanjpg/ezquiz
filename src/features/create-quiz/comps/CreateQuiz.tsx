@@ -1,11 +1,10 @@
 import { ChangeEvent, useState } from "react"
 
 import { FaTimes } from "react-icons/fa"
-import CenterVertical from "../../../app/comps/center-vertical"
+import CenterVertical from "~/app/comps/center-vertical"
 
-import JoinComps from "../../../app/comps/join-comps"
-import { useAppBatch, useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { trpc } from "../../../utils/trpc"
+import JoinComps from "~/app/comps/join-comps"
+import { useAppBatch, useAppDispatch, useAppSelector } from "~/app/hooks"
 import {
   createAnswer,
   CreateQuizStep,
@@ -24,7 +23,8 @@ import {
   createQuestion,
   selectIsAnswerCorrectCQ,
   setAnswerIsCorrect,
-} from "../createQuizSlice"
+} from "~/features/create-quiz/createQuizSlice"
+import { api } from "~/utils/api"
 
 export default () => {
   const step = useAppSelector(selectCurrentStep)
@@ -107,7 +107,7 @@ function QuestionTitle() {
       updateQuestion({
         ...question,
         text: event.target.value,
-      })
+      }),
     )
   }
   return (
@@ -160,7 +160,7 @@ function AnswerItem(props: { id: string }) {
   const ansid = answer.id
 
   const iscorrect = useAppSelector((state) =>
-    selectIsAnswerCorrectCQ({ state: state, ansid })
+    selectIsAnswerCorrectCQ({ state: state, ansid }),
   )
 
   const dispatch = useAppDispatch()
@@ -179,7 +179,7 @@ function AnswerItem(props: { id: string }) {
       setAnswerIsCorrect({
         id: ansid,
         iscorrect: isc,
-      })
+      }),
     )
   }
 
@@ -241,7 +241,7 @@ function AddQuestionButton() {
 }
 
 function SubmitQuiz() {
-  const mutation = trpc.useMutation(["quiz.create"])
+  const mutation = api.quizzes.create.useMutation()
   const quests = useAppSelector(selectAllQuestions)
 
   if (!quests) throw new Error("NO QUESTIONS")

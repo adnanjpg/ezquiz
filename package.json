@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "start_containers": "docker compose up -d",
+    "dev": "npm run start_containers && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,20 +12,24 @@
   "dependencies": {
     "@prisma/client": "^4.15.0",
     "@reduxjs/toolkit": "^1.9.5",
-    "@trpc/client": "^10.29.0",
+    "@supabase/supabase-js": "^2.24.0",
+    "@trpc/client": "^10.29.1",
     "@trpc/next": "^10.29.0",
-    "@trpc/react": "^9.27.3",
-    "@trpc/server": "^10.29.0",
+    "@trpc/react-query": "^10.18.0",
+    "@trpc/server": "^10.29.1",
     "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.9.0",
     "react-query": "^3.39.3",
     "react-redux": "^8.0.7",
+    "superjson": "1.12.2",
     "tailwindcss-rtl": "^0.9.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@t3-oss/env-nextjs": "^0.4.0",
+    "@types/eslint": "^8.40.2",
     "@types/node": "20.2.5",
     "@types/react": "^18.2.8",
     "@types/react-dom": "18.2.4",

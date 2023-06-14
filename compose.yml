@@ -1,0 +1,14 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    environment:
+      # POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 5zy2233BWOt4qUCD
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data/

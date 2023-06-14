@@ -1,12 +1,11 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -14,8 +13,8 @@ model User {
 }
 
 model Quiz {
-  id        Int @id @default(autoincrement())
-  creatorId Int
+  id        Int    @id @default(autoincrement())
+  creatorId String
 }
 
 model Question {
