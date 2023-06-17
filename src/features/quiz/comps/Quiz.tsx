@@ -1,8 +1,6 @@
 import CenterVertical from "~/app/comps/center-vertical"
 import { useAppDispatch, useAppSelector } from "~/app/hooks"
 import { RootState } from "~/app/store"
-import { ErrorViewPage } from "~/components/errorView"
-import { LoadingPage } from "~/components/loader"
 import {
   isAnswered,
   isAnswerSelected,
@@ -26,27 +24,10 @@ import {
   selectQuizIsOngoing,
   selectFinalScore,
   resetQuiz,
-  setQuiz,
   selecteQuizTitle,
 } from "~/features/quiz/quizSlice"
-import { api } from "~/utils/api"
 
-export default (props: { id: number }) => {
-  const { data, isLoading, isError, error } = api.quizzes.get.useQuery({
-    id: props.id,
-  })
-
-  if (isLoading) return <LoadingPage />
-
-  if (isError) return <ErrorViewPage error={{ message: error.message }} />
-
-  const dispatch = useAppDispatch()
-  dispatch(setQuiz(data!))
-
-  return <RenderQuizWData />
-}
-
-function RenderQuizWData() {
+export default () => {
   const hasStarted = useAppSelector(selectQuizHasStarted)
   const isConfirmingFinish = useAppSelector(selectQuizIsConfirmingFinish)
   const isFinished = useAppSelector(selectQuizIsFinished)
