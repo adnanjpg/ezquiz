@@ -1,10 +1,12 @@
 import CenterVertical from "~/app/comps/center-vertical"
 import { useAppDispatch, useAppSelector } from "~/app/hooks"
 import { RootState } from "~/app/store"
+import { ErrorViewPage } from "~/components/errorView"
+import { LoadingPage } from "~/components/loader"
 import {
   isAnswered,
   isAnswerSelected,
-  isQuestionMultiSelection,
+  selectIsQuestionMultiSelection,
   QuestionAnswer,
   selectAllQuestionIds,
   selectIsInFirstQuestion,
@@ -24,9 +26,27 @@ import {
   selectQuizIsOngoing,
   selectFinalScore,
   resetQuiz,
+  setQuiz,
+  selecteQuizTitle,
 } from "~/features/quiz/quizSlice"
+import { api } from "~/utils/api"
 
-export default () => {
+export default (props: { id: number }) => {
+  const { data, isLoading, isError, error } = api.quizzes.get.useQuery({
+    id: props.id,
+  })
+
+  if (isLoading) return <LoadingPage />
+
+  if (isError) return <ErrorViewPage error={{ message: error.message }} />
+
+  const dispatch = useAppDispatch()
+  dispatch(setQuiz(data!))
+
+  return <RenderQuizWData />
+}
+
+function RenderQuizWData() {
   const hasStarted = useAppSelector(selectQuizHasStarted)
   const isConfirmingFinish = useAppSelector(selectQuizIsConfirmingFinish)
   const isFinished = useAppSelector(selectQuizIsFinished)
@@ -42,6 +62,7 @@ export default () => {
 
 function NotStartedQuiz() {
   const dispatch = useAppDispatch()
+  const quiztitle = useAppSelector(selecteQuizTitle)
 
   const startQuiz = () => {
     dispatch(setToNextQuestion())
@@ -50,7 +71,7 @@ function NotStartedQuiz() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <span className="text-xl">Welcome to the Friends Quiz</span>
+      <span className="text-xl">{quiztitle}</span>
       <div className="my-3"></div>
       <div className="text-xl">
         <button className="primary-button" onClick={startQuiz}>
@@ -165,7 +186,7 @@ function ShowQuestionAnswers() {
 
   if (!answers) throw new Error("No Answers")
 
-  let isMultiSelection = isQuestionMultiSelection(selectedQ)
+  let isMultiSelection = selectIsQuestionMultiSelection(selectedQ)
 
   if (isMultiSelection) {
     return <div>{answers.map(ShowQAnswerCheckbox)}</div>
@@ -201,7 +222,7 @@ function ShowQuestionAnswersRadio() {
 
     return dispatch(
       setAnswer({
-        ansid: e.target.value,
+        ansid: Number(e.target.name),
         qid: qid,
       }),
     )
@@ -217,7 +238,7 @@ function ShowQuestionAnswersRadio() {
             value={e.id}
             checked={e.id === selectedAnswerId}
             onChange={onToggleChange}
-            name={e.id}
+            name={String(e.id)}
           />
           <span>{e.text}</span>
         </div>
@@ -334,7 +355,7 @@ function LastQNextBtn() {
   )
 }
 
-function ShowSelectableQuestion(id: string) {
+function ShowSelectableQuestion(id: number) {
   const dispatch = useAppDispatch()
 
   const switchToQuestion = () => dispatch(setSelectedQuestion(id))

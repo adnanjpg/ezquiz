@@ -2,6 +2,22 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc"
 import z from "zod"
 
 export const quizzesRouter = createTRPCRouter({
+  get: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const quiz = await ctx.prisma.quiz.findUnique({
+        where: { id: input.id },
+        include: {
+          questions: {
+            include: {
+              answers: true,
+            },
+          },
+        },
+      })
+
+      return quiz
+    }),
   create: publicProcedure
     .input(
       z.object({

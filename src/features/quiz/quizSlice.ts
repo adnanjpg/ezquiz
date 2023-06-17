@@ -1,25 +1,25 @@
+import { Prisma } from "@prisma/client"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AppThunk, RootState } from "~/app/store"
 
-import questions from "~/assets/questions.json"
-
 export interface QuestionAnswer {
-  id: string
+  id: number
   text?: string
+  isCorrect?: boolean
 }
 
 export interface Question {
-  id: string
+  id: number
   text?: string
   answers?: Array<QuestionAnswer>
-  correctAnswersIds?: Array<string>
+  correctAnswersIds?: Array<number>
 }
 
 // this defines the state of selected
 // answers for each questions
 export interface SelectedAnswer {
-  qid: string
-  ansids: Array<string>
+  qid: number
+  ansids: Array<number>
 }
 
 export enum QuizProgressState {
@@ -31,35 +31,44 @@ export enum QuizProgressState {
 
 export interface QuizState {
   progState: QuizProgressState
-  selectedQuestionId?: string
+  selectedQuestionId?: number
   questions: Array<Question>
+  quiz?: Quiz
   selectedAnswers: Array<SelectedAnswer>
+}
+
+export interface Quiz {
+  id: number
+  creatorId: String
+  title: String
+  questions: Array<Question>
 }
 
 const initialState: QuizState = {
   progState: QuizProgressState.NotStarted,
-  questions: questions,
+  questions: [],
+  quiz: undefined,
   selectedAnswers: [],
 }
 
 // this will be used to determine wether to show a radio or a checkbox
-export const isQuestionMultiSelection = (que: Question) =>
+export const selectIsQuestionMultiSelection = (que: Question) =>
   que.correctAnswersIds && que.correctAnswersIds.length > 1
 
 export const selectSelectedAnswersForQ = (props: {
   state: RootState
-  qid: string
+  qid: number
 }) => {
   return props.state.quiz.selectedAnswers.find((e) => e.qid === props.qid)
 }
 
-export const isAnswered = (props: { state: RootState; qid: string }) =>
+export const isAnswered = (props: { state: RootState; qid: number }) =>
   !!selectSelectedAnswersForQ({ state: props.state, qid: props.qid })?.ansids
 
 export const isAnswerSelected = (props: {
   state: RootState
-  qid: string
-  ansid: string
+  qid: number
+  ansid: number
 }) =>
   selectSelectedAnswersForQ({
     state: props.state,
@@ -94,6 +103,9 @@ export const selectCurrentQuestionId = (state: RootState) =>
 
 export const selectFirstQuestion = (state: RootState) =>
   state.quiz.questions.at(0)
+
+export const selecteQuizTitle = (state: RootState) =>
+  state.quiz.quiz?.title ?? ""
 
 /**
  *
@@ -156,6 +168,8 @@ export const selectQuizIsFinished = (state: RootState) =>
 export const selectQuizIsOngoing = (state: RootState) =>
   state.quiz.progState == QuizProgressState.Ongoing
 
+export const selectQuizTitle = (state: RootState) => state.quiz
+
 export const selectLastQuestion = (state: RootState) => {
   const q = state.quiz
   const ques = q.questions
@@ -191,7 +205,7 @@ export const setToPrevQuestion = (): AppThunk => (dispatch, getState) => {
   try {
     const intId: number = +currentValue
 
-    dispatch(setSelectedQuestion(String(intId - 1)))
+    dispatch(setSelectedQuestion(intId - 1))
   } catch (error) {
     throw new Error("Ur id should be int convertible!!!")
   }
@@ -203,7 +217,7 @@ export const setToNextQuestion = (): AppThunk => (dispatch, getState) => {
   try {
     const intId: number = +currentValue
 
-    dispatch(setSelectedQuestion(String(intId + 1)))
+    dispatch(setSelectedQuestion(intId + 1))
   } catch (error) {
     throw new Error("Ur id should be int convertible!!!")
   }
@@ -213,13 +227,19 @@ export const quizSlice = createSlice({
   name: "quiz",
   initialState,
   reducers: {
-    setSelectedQuestion: (state, action: PayloadAction<string>) => {
+    setQuiz: (state, action: PayloadAction<QuizDetailQuery>) => {
+      const q = action.payload
+      state.quiz = q
+      state.questions = q.questions
+      state.selectedQuestionId = state.questions.at(0)?.id
+    },
+    setSelectedQuestion: (state, action: PayloadAction<number>) => {
       state.selectedQuestionId = action.payload
     },
     // for checkboxes
     toggleAnswer: (
       state,
-      action: PayloadAction<{ qid: string; ansid: string; ischecked: boolean }>,
+      action: PayloadAction<{ qid: number; ansid: number; ischecked: boolean }>,
     ) => {
       state.selectedAnswers = state.selectedAnswers.map((e) => {
         if (e.qid != action.payload.qid) return e
@@ -238,7 +258,7 @@ export const quizSlice = createSlice({
     // for radios, it invalidates all other options
     setAnswer: (
       state,
-      action: PayloadAction<{ qid: string; ansid: string }>,
+      action: PayloadAction<{ qid: number; ansid: number }>,
     ) => {
       if (!state.selectedAnswers.some((e) => e.qid === action.payload.qid)) {
         state.selectedAnswers = [
@@ -266,12 +286,23 @@ export const quizSlice = createSlice({
   },
 })
 
+type QuizDetailQuery = Prisma.QuizGetPayload<{
+  include: {
+    questions: {
+      include: {
+        answers: true
+      }
+    }
+  }
+}>
+
 export const {
   setSelectedQuestion,
   toggleAnswer,
   setAnswer,
   setProgState,
   resetQuiz,
+  setQuiz,
 } = quizSlice.actions
 
 export default quizSlice.reducer

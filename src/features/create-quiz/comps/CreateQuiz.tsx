@@ -44,7 +44,7 @@ function QuizTitle() {
 
   const onClick = () => {
     useAppBatch(() => {
-      dispatch(setSelectedQuestionId("1"))
+      dispatch(setSelectedQuestionId(1))
       dispatch(createQuestion())
       dispatch(setConfirmedTitle(title))
       dispatch(setStep(CreateQuizStep.creatingQuestions))
@@ -152,7 +152,7 @@ function Answers() {
   )
 }
 
-function AnswerItem(props: { id: string }) {
+function AnswerItem(props: { id: number }) {
   const id = props.id
 
   const answers = useAppSelector(selectCurrentQuestionAnswers) ?? []
@@ -285,7 +285,7 @@ function SubmitQuiz() {
   )
 }
 
-function ShowSelectableQuestion(props: { id: string }) {
+function ShowSelectableQuestion(props: { id: number }) {
   const dispatch = useAppDispatch()
 
   const id = props.id

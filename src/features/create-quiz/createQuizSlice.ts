@@ -17,7 +17,7 @@ interface CreateQuizState {
   questions?: Array<Question>
   answers?: Array<QuestionAnswer>
   currentStep: CreateQuizStep
-  selectedQuestionId?: string
+  selectedQuestionId?: number
 }
 
 const initialState: CreateQuizState = {
@@ -42,10 +42,10 @@ const selectCurrentQuestionId = (state: RootState) => {
   return selectedQuestionId
 }
 
-const selectQuestionWithId = (props: { state: RootState; id: string }) =>
+const selectQuestionWithId = (props: { state: RootState; id: number }) =>
   selectAllQuestions(props.state)?.find((e) => e.id === props.id)
 
-const selectQuestionAnswers = (props: { state: RootState; id: string }) =>
+const selectQuestionAnswers = (props: { state: RootState; id: number }) =>
   selectQuestionWithId(props)?.answers
 
 export const selectCurrentQuestion = (state: RootState) =>
@@ -83,7 +83,7 @@ export const selectCanGoNextQuestion = (state: RootState) => {
 }
 export const selectCorrectAnswerIdsForQ = (props: {
   state: RootState
-  id: string
+  id: number
 }) => {
   const selectedQ = selectQuestionWithId(props)
 
@@ -94,8 +94,8 @@ export const selectCorrectAnswerIdsForQ = (props: {
 
 const selectIsAnswerCorrect = (props: {
   state: RootState
-  qid: string
-  ansid: string
+  qid: number
+  ansid: number
 }) => {
   const ansIds = selectCorrectAnswerIdsForQ({
     state: props.state,
@@ -107,7 +107,7 @@ const selectIsAnswerCorrect = (props: {
 
 export const selectIsAnswerCorrectCQ = (props: {
   state: RootState
-  ansid: string
+  ansid: number
 }) =>
   selectIsAnswerCorrect({
     ...props,
@@ -126,7 +126,7 @@ export const createQuizSlice = createSlice({
     setTitle: (state, action: PayloadAction<string>) => {
       state.title = action.payload
     },
-    setSelectedQuestionId: (state, action: PayloadAction<string>) => {
+    setSelectedQuestionId: (state, action: PayloadAction<number>) => {
       state.selectedQuestionId = action.payload
     },
     createAnswer: (state) => {
@@ -140,7 +140,7 @@ export const createQuizSlice = createSlice({
           const lastId = lastAnswer?.id ?? "0"
           const newId = +lastId + 1
 
-          return { ...e, answers: [...(e.answers ?? []), { id: newId + "" }] }
+          return { ...e, answers: [...(e.answers ?? []), { id: newId }] }
         }
 
         return e
@@ -165,7 +165,7 @@ export const createQuizSlice = createSlice({
     },
     setAnswerIsCorrect: (
       state,
-      action: PayloadAction<{ id: string; iscorrect: boolean }>,
+      action: PayloadAction<{ id: number; iscorrect: boolean }>,
     ) => {
       const selectedQId = state.selectedQuestionId
       const ansId = action.payload.id
@@ -182,7 +182,7 @@ export const createQuizSlice = createSlice({
           : question,
       )
     },
-    removeAnswer: (state, action: PayloadAction<string>) => {
+    removeAnswer: (state, action: PayloadAction<number>) => {
       const ansid = action.payload
       const qid = state.selectedQuestionId
 
@@ -203,7 +203,7 @@ export const createQuizSlice = createSlice({
 
       const lastQ = questions ? questions[questions.length - 1] : null
       const lastId = lastQ?.id ?? "0"
-      const newId = +lastId + 1 + ""
+      const newId = +lastId + 1
 
       if (!state.questions) state.questions = []
 
