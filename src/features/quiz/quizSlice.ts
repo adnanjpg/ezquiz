@@ -46,9 +46,10 @@ export interface Quiz {
 
 const initialState: QuizState = {
   progState: QuizProgressState.NotStarted,
+  selectedAnswers: [],
+  //
   questions: [],
   quiz: undefined,
-  selectedAnswers: [],
 }
 
 // this will be used to determine wether to show a radio or a checkbox
@@ -283,7 +284,13 @@ export const quizSlice = createSlice({
     setProgState: (state, action: PayloadAction<QuizProgressState>) => {
       state.progState = action.payload
     },
-    resetQuiz: (state) => (state = initialState),
+    resetQuiz: (state) =>
+      (state = {
+        ...state,
+        selectedQuestionId: state.questions.at(0)?.id,
+        progState: QuizProgressState.NotStarted,
+        selectedAnswers: [],
+      }),
   },
 })
 
