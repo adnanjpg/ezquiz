@@ -98,8 +98,9 @@ const isLastQuestion = (que: Question, state: RootState) => {
 export const selectAnyQuestionIsSelecteed = (state: RootState) =>
   state.quiz.selectedQuestionId != null
 
-export const selectCurrentQuestionId = (state: RootState) =>
-  state.quiz.selectedQuestionId
+export const selectCurrentQuestionId = (state: RootState) => {
+  return state.quiz.selectedQuestionId
+}
 
 export const selectFirstQuestion = (state: RootState) =>
   state.quiz.questions.at(0)
@@ -200,7 +201,7 @@ export const selectIsInLastQuestion = (state: RootState) =>
   isLastQuestion(selectSelectedQuestion(state)!, state)
 
 export const setToPrevQuestion = (): AppThunk => (dispatch, getState) => {
-  const currentValue = selectCurrentQuestionId(getState()) || "1"
+  const currentValue = selectCurrentQuestionId(getState()) || 1
 
   try {
     const intId: number = +currentValue
@@ -212,7 +213,7 @@ export const setToPrevQuestion = (): AppThunk => (dispatch, getState) => {
 }
 
 export const setToNextQuestion = (): AppThunk => (dispatch, getState) => {
-  const currentValue = selectCurrentQuestionId(getState()) || "0"
+  const currentValue = selectCurrentQuestionId(getState()) || 0
 
   try {
     const intId: number = +currentValue

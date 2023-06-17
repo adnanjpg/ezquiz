@@ -65,7 +65,6 @@ function NotStartedQuiz() {
   const quiztitle = useAppSelector(selecteQuizTitle)
 
   const startQuiz = () => {
-    dispatch(setToNextQuestion())
     dispatch(setProgState(QuizProgressState.Ongoing))
   }
 
